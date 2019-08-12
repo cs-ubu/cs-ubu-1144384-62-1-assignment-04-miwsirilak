@@ -22,7 +22,7 @@ class CSUBUFlutterApp extends StatelessWidget {
     return MaterialApp(
       title: appTitle,
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.purple,
         //fontFamily: 'Roboto'
       ),
       home: AppHomePage(title: appTitle),
@@ -62,7 +62,7 @@ class _AppHomePageState extends State<AppHomePage> {
       result.forEach((item) {
         if (item.containsKey('_source')) {
           var source = item['_source'];
-          if (source.containsKey('name') && source.containsKey('brand')) {
+          if (source.containsKey('brand') && source.containsKey('generation')) {
             _students.add(item['_source']);
           }
         }
@@ -82,25 +82,36 @@ class _AppHomePageState extends State<AppHomePage> {
   Widget studentWidgets(BuildContext context) {
     return ListView.separated(
         itemCount: _students.length,
-        padding: const EdgeInsets.all(8.0),
+        padding: const EdgeInsets.all(10),
         separatorBuilder: (context, i) => const Divider(),
         itemBuilder: (context, i) {
           final student = _students[i];
           var sum = 0;
-          student['brand'].runes.forEach((c) { sum += c; });
+          student['generation'].runes.forEach((c) { sum += c; });
           return ListTile(
+            contentPadding: EdgeInsets.all(10),
             title: Row(
                   children: <Widget>[
                     // Image.asset('assets/images/csubu-bw.png', width: 48, height: 48),
                     CircleAvatar(backgroundImage: NetworkImage('${student["image"]}')),
-                    Expanded(child: Text(student["name"]))
+                    Expanded(child: Text(student["brand"])),
+                    Icon(Icons.star, color: Colors.yellow),
+                    Icon(Icons.star, color: Colors.yellow),
+                    Icon(Icons.star, color: Colors.yellow),
+                    Icon(Icons.star, color: Colors.yellow),
+                    Icon(Icons.star, color: Colors.yellow)
                   ]
                 ),
-            subtitle: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+
+            subtitle: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
+                Text('รุ่น: ${student["generation"]}'),
                 Text('Price: ${student["price"]}'),
-                Text('Brand: ${student["brand"]}')
+                Icon(Icons.share, color: Colors.black26),
+                Icon(Icons.thumb_up, color: Colors.lightBlue),
+                Icon(Icons.favorite, color: Colors.pink),
+
               ]
              )
           );
@@ -116,7 +127,7 @@ class _AppHomePageState extends State<AppHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text(widget.title),
+        title: Text(widget.title) ,
       ),
       body: Center(
         child: (_loading)? loadingWidget(context) : studentWidgets(context),
